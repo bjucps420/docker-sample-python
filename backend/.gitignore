@@ -1,0 +1,5 @@
+.idea/
+mysite/__pycache__/
+todo/__pycache__/
+todo/management/commands/__pycache__/
+todo/migrations/__pycache__/
