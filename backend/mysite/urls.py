@@ -13,10 +13,32 @@ Including another URLconf
     1. Import the include() function: from django.urls import include, path
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
+import time
+
 from django.contrib import admin
-from django.urls import path, include
+from django.urls import path
+from django.utils.http import http_date
+
+from ninja import NinjaAPI
+
+from todo.todo_views import router as todo_router
+from todo.enum_views import router as enum_views
+
+
+class MyApi(NinjaAPI):
+    def create_temporal_response(self, request):
+        response = super().create_temporal_response(request)
+        response.headers["Expires"] = http_date(time.time())
+        response.headers["Cache-Control"] = "no-cache, no-store, must-revalidate, max-age=0"
+        return response
+
+
+api = MyApi()
+
+api.add_router("/todo/", todo_router)
+api.add_router("/enum/", enum_views)
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('', include('todo.urls'))
+    path('api/', api.urls),
 ]
