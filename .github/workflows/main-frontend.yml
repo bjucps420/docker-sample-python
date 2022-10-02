@@ -13,6 +13,10 @@ jobs:
                 node-version: 16
             - run: cd frontend && npm install
             - run: cd frontend && npm run generate
+            - uses: vimtor/action-zip@v1
+              with:
+                files: frontend/dist/
+                dest: frontend/dist.zip
             - uses: actions/upload-artifact@v2
               with:
                 name: dist
