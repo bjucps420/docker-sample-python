@@ -15,10 +15,8 @@ jobs:
                     - 6379:6379
         steps:
             - uses: actions/checkout@v3
-            - uses: actions/setup-python@v1
+            - uses: actions/setup-python@v4
               with:
-                python-version: 3.9
+                python-version: '3.9' 
             - run: sudo apt install -y python-dev libpq-dev
-            - run: |
-                cd backend
-                python -m pip install -r requirements.txt
+            - run: cd backend && python -m pip install -r requirements.txt

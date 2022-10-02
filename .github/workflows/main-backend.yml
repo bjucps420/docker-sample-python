@@ -1,4 +1,4 @@
-name: Build Backend
+name: Build & Push Backend
 on:
     push:
         branches:
@@ -18,23 +18,21 @@ jobs:
                     - 6379:6379
         steps:
             - uses: actions/checkout@v3
-            - uses: actions/setup-python@v1
+            - uses: actions/setup-python@v4
               with:
-                python-version: 3.9
+                python-version: '3.9' 
             - run: sudo apt install -y python-dev libpq-dev
-            - run: |
-                cd backend
-                python -m pip install -r requirements.txt
+            - run: cd backend && python -m pip install -r requirements.txt
     docker:
         runs-on: ubuntu-latest
         needs: build
         steps:
             - uses: actions/checkout@v3
             - run: cd backend && docker build -t backend .
-            - run: docker tag backend registry.digitalocean.com/todos/backend:$GITHUB_SHA
+            - run: docker tag backend registry.digitalocean.com/cps420-todos/backend:$GITHUB_SHA
             - name: Install doctl
               uses: digitalocean/action-doctl@v2
               with:
                 token: ${{ secrets.DIGITALOCEAN_ACCESS_TOKEN }}
             - run: doctl registry login
-            - run: docker push registry.digitalocean.com/todos/backend:$GITHUB_SHA
+            - run: docker push registry.digitalocean.com/cps420-todos/backend:$GITHUB_SHA
